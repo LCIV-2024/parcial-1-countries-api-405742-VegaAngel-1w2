@@ -1,6 +1,6 @@
 services:
   parcial-1-countries-api-405742-VegaAngel-1w2:
-    container_name: parcial-1-VegaNahuel
+    container_name: parcial-1-VegaNahuelDO
     image: simulacro-elecciones
     build: .
     ports:
