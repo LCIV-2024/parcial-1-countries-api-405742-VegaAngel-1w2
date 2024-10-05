@@ -1,6 +1,7 @@
 package ar.edu.utn.frc.tup.lciii.configs;
 
 
+import ar.edu.utn.frc.tup.lciii.repository.CountryRepository;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import io.swagger.v3.core.jackson.ModelResolver;
 import io.swagger.v3.oas.models.Components;
@@ -11,6 +12,7 @@ import io.swagger.v3.oas.models.servers.Server;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.web.client.RestTemplate;
 
 @Configuration
 public class SpringDocConfig {
@@ -48,4 +50,12 @@ public class SpringDocConfig {
     public ModelResolver modelResolver(ObjectMapper objectMapper) {
         return new ModelResolver(objectMapper);
     }
+    @Bean
+    public RestTemplate restTemplate(){
+        return new RestTemplate();
+    }
+//    @Bean
+//    public RestTemplate restTemplate(RestTemplate restTemplate){
+//        return new CountryRepository();
+//    }
 }

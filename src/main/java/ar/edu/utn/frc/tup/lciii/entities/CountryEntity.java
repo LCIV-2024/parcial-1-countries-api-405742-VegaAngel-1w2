@@ -1,23 +1,12 @@
-package ar.edu.utn.frc.tup.lciii.model;
+package ar.edu.utn.frc.tup.lciii.entities;
 
 import jakarta.persistence.Entity;
 import jakarta.persistence.Id;
-import jdk.jfr.Enabled;
-import lombok.AllArgsConstructor;
-import lombok.Builder;
-import lombok.Getter;
-import lombok.NoArgsConstructor;
-import lombok.Setter;
 
 import java.util.List;
 import java.util.Map;
 
-@Getter
-@Setter
-@Builder
-@AllArgsConstructor
-@NoArgsConstructor
-public class Country {
+public class CountryEntity {
 
     private String name;
     private long population;
