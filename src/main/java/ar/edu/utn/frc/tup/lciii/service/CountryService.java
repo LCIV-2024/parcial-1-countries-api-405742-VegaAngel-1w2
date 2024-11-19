@@ -1,6 +1,7 @@
 package ar.edu.utn.frc.tup.lciii.service;
 
 import ar.edu.utn.frc.tup.lciii.dtos.common.DtoResponse;
+import ar.edu.utn.frc.tup.lciii.entities.CountryEntity;
 import ar.edu.utn.frc.tup.lciii.model.Country;
 import ar.edu.utn.frc.tup.lciii.repository.CountryRepository;
 import lombok.RequiredArgsConstructor;
@@ -19,6 +20,8 @@ public class CountryService {
 
         @Autowired
         private final RestTemplate restTemplate;
+        @Autowired
+        private final CountryRepository repository;
 
         public List<Country> getAllCountries() {
                 String url = "https://restcountries.com/v3.1/all";
@@ -37,6 +40,15 @@ public class CountryService {
                         DtoResponse dto = new DtoResponse(c.getCode(),c.getName());
                         respuesta.add(dto);
                 }
+                return respuesta;
+        }
+        public List<Country> getAllNoMapped(){
+//                String url = "https://restcountries.com/v3.1/all";
+//                List<Map<String, Object>> response = restTemplate.getForObject(url, List.class);
+//                List<Country> lst =  response.stream().map(this::mapToCountry).collect(Collectors.toList());
+                //return response.stream().map(this::mapToCountry).collect(Collectors.toList());
+                List<Country> respuesta ;
+                respuesta = this.getAllCountries();
                 return respuesta;
         }
         public List<DtoResponse> getByNameOfCOde(String name,String code){
@@ -92,13 +104,22 @@ public class CountryService {
                 }
                 return respuesta;
         }
-        public List<DtoResponse> getMasFronteras(){
+        public DtoResponse getMasFronteras(){
                 Country masFronteras = new Country();
                 List<Country> paises = this.getAllCountries();
                 for (Country c : paises){
-                       // if( )
+                        if(c.getBorders() != null) {
+                        if(Objects.equals(masFronteras.getName(),null)){
+                                masFronteras = c;
+                        }
+
+                                if (c.getBorders().size() > masFronteras.getBorders().size()) {
+                                        masFronteras = c;
+                                }
+                        }
                 }
-                return  null;
+                DtoResponse respose = new DtoResponse(masFronteras.getCode(),masFronteras.getName());
+                return respose;
         }
         public List<DtoResponse> getByLenguague(String idioma){
                 List<Country> countries = this.getAllCountries();
@@ -107,7 +128,7 @@ public class CountryService {
                 for (Country c:countries){
                         if(c.getLanguages() != null){
                       for (Map.Entry<String,String> lenguaje :c.getLanguages().entrySet()){
-                                        if(lenguaje.equals(idioma)){
+                                        if(Objects.equals(lenguaje.getValue(), idioma)){
                                                 filtrados.add(c);
                                         }
                       }}
@@ -118,6 +139,35 @@ public class CountryService {
                         respuesta.add(dto);
                 }
                 return respuesta;
+        }
+        public List<DtoResponse> postCountries(int number){
+                Random random = new Random();
+                List<Country> paises = this.getAllCountries();
+               // random.nextInt(paises.size());
+                List<Country> paisesFiltrado = new ArrayList<>();
+                for (int i = 0; i < number; i++) {
+                      Integer r =  random.nextInt(paises.size());
+                        paisesFiltrado.add(paises.get(r));
+                }
+                for(Country c:paisesFiltrado){
+                        CountryEntity ce = new CountryEntity();
+                        ce.setArea(c.getArea());
+                        ce.setName(c.getName());
+                        ce.setRegion(c.getRegion());
+                        ce.setCode(c.getCode());
+                        ce.setPopulation(c.getPopulation());
+                        repository.save(ce);
+                }
+
+
+
+                List<CountryEntity> respuesta = repository.findAll();
+                List<DtoResponse> response = new ArrayList<>();
+                for(CountryEntity c : respuesta){
+                        DtoResponse dto = new DtoResponse(c.getCode(),c.getName());
+                        response.add(dto);
+                }
+                return response;
         }
 
 
